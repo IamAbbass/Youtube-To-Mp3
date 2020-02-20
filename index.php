@@ -2,8 +2,11 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Youtube to MP3 Converter</title>
+    <title>Free Youtube to MP3 Converter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Free Youtube to MP3 Converter">
+    <meta name="keywords" content="youtube,mp3,converter,youtube2mp3,mp4,mp3,fast,youtube,download">
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script
@@ -14,25 +17,22 @@
       $(document).ready(function(){
         $("#youtube").submit(function(e){
           e.preventDefault();
-          try{
-            var url = $("#url").val();
-            var video_id = url.split('v=')[1];
-            var ampersandPosition = video_id.indexOf('&');
-            if(ampersandPosition != -1) {
-              video_id = video_id.substring(0, ampersandPosition);
+          $("#mp3_here").html("Converting Youtube to MP3..");
+          $.getJSON("download.php?url="+$("#url").val(),function(data){
+
+            if(data.error){
+              alert(data.message);
+              $("#mp3_here").html(data.message);
+            }else{
+              $("#mp3_here").html("<audio controls>"+
+                  "<source src='"+(data.file)+"' type='audio/ogg'>"+
+                  "<source src='"+(data.file)+"' type='audio/mpeg'>"+
+                  "Your browser does not support the audio element."+
+                  "</audio><br/>"+
+                  "Click to download: <a target='_blank' href='"+(data.file)+"'>"+(data.title)+"</a>");
             }
 
-            $code = '<iframe '+
-            'src="//www.recordmp3.co/#/watch?v='+video_id+'&layout=button"'+
-            'style="width: 300px; height: 40px; border: 0px;"></iframe>'+
-            '<noscript>'+
-              '<a href="https://www.recordmp3.co/#/watch?v='+video_id+'">Youtube to MP3</a>'+
-            '</noscript>';
-            $("#mp3_here").html($code);
-
-          }catch(e){
-            alert("Invalid URL");
-          }
+          });
         });
       });
     </script>
@@ -86,10 +86,10 @@
   </head>
   <body>
       <div class="center_container">
-        <h1 class="title">Youtube to MP3 Converter</h1>
+        <h1 class="title">Free Youtube to MP3 Converter</h1>
 
         <form id="youtube">
-          <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=erZ3IyBCXdY" value="https://www.youtube.com/watch?v=erZ3IyBCXdY" required />
+          <input id="url" name="url" type="url" placeholder="https://www.youtube.com/watch?v=VDB65S6rCC0" required />
           <button id="submit" type="submit">Youtube to MP3</button>
         </form>
         <div id="mp3_here"></div>
